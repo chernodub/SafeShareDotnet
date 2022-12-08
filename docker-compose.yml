@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  db:
+    env_file:
+      - .env
+    
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+
+  todo-api:
+    env_file:
+      - .env
+
+    image: todos-api
+    restart: always
+    depends_on:
+      - db
+    links:
+      - db:${POSTGRES_SERVER_ALIAS}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
