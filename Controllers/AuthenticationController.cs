@@ -43,6 +43,37 @@ public class AuthenticationController : ControllerBase
         return Ok(new UserDto(user));
     }
 
+    [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Login(LoginDto loginDto)
+    {
+        User user = await _appDbContext.Users.FirstAsync(user => user.Email == loginDto.Email);
+
+        ValidateUser(loginDto, user);
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        return Ok(new UserDto(user));
+    }
+
+    private void ValidateUser(LoginDto loginDto, User? user)
+    {
+        bool isUserFound = user != null;
+        bool isPasswordValid = user?.HashedPassword != null &&
+                               _passwordHasher.VerifyHashedPassword(
+                                   user, user.HashedPassword, loginDto.Password) == PasswordVerificationResult.Success;
+
+
+        if (!isUserFound || !isPasswordValid)
+        {
+            ModelState.AddModelError(nameof(LoginDto.Email), "Invalid email or password");
+        }
+    }
+
     private User CreateUser(RegistrationDto registrationDto)
     {
         User user = new()
