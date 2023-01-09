@@ -1,4 +1,4 @@
-namespace SafeShare.Models;
+namespace SafeShare.Dto;
 
 public class LoginDto
 {
