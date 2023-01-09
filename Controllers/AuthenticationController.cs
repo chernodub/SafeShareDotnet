@@ -1,9 +1,13 @@
+using System.Security.Claims;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
+using SafeShare.DAL;
 using SafeShare.Dto;
 using SafeShare.Models;
+using SafeShare.Services;
 
 namespace SafeShare.Controllers;
 
@@ -11,16 +15,18 @@ namespace SafeShare.Controllers;
 [ApiController]
 public class AuthenticationController : ControllerBase
 {
-    private readonly AppDbContext _appDbContext;
+    private readonly IAuthenticationTokenService _authenticationTokenService;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly IUserRepository _userRepository;
 
     public AuthenticationController(
-        AppDbContext appDbContext,
-        IPasswordHasher<User> passwordHasher
-    )
+        IUserRepository userRepository,
+        IPasswordHasher<User> passwordHasher,
+        IAuthenticationTokenService authenticationTokenService)
     {
-        _appDbContext = appDbContext;
+        _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _authenticationTokenService = authenticationTokenService;
     }
 
     [HttpPost("register")]
@@ -37,8 +43,7 @@ public class AuthenticationController : ControllerBase
 
         User user = CreateUser(registrationDto);
 
-        await _appDbContext.Users.AddAsync(user);
-        await _appDbContext.SaveChangesAsync();
+        await _userRepository.InsertUser(user);
 
         return Ok(new UserDto(user));
     }
@@ -48,19 +53,34 @@ public class AuthenticationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
-        User user = await _appDbContext.Users.FirstAsync(user => user.Email == loginDto.Email);
+        User? user = await _userRepository.GetUserByEmail(loginDto.Email);
 
-        ValidateUser(loginDto, user);
+        ValidateLoginDto(loginDto, user);
 
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid || user is null)
         {
             return BadRequest(ModelState);
         }
 
-        return Ok(new UserDto(user));
+        return Ok(CreateUserSecret(user));
     }
 
-    private void ValidateUser(LoginDto loginDto, User? user)
+    private UserSecretDto CreateUserSecret(User user)
+    {
+        return new UserSecretDto { Token = _authenticationTokenService.GenerateToken(CreateClaimsPrincipal(user)) };
+    }
+
+    private static ClaimsPrincipal CreateClaimsPrincipal(User user)
+    {
+        List<Claim> claims = new() { new Claim(ClaimTypes.Email, user.Email) };
+
+        ClaimsIdentity claimsIdentity = new(claims, JwtBearerDefaults.AuthenticationScheme);
+        ClaimsPrincipal claimsPrincipal = new(claimsIdentity);
+
+        return claimsPrincipal;
+    }
+
+    private void ValidateLoginDto(LoginDto loginDto, User? user)
     {
         bool isUserFound = user != null;
         bool isPasswordValid = user?.HashedPassword != null &&
@@ -89,19 +109,14 @@ public class AuthenticationController : ControllerBase
 
     private async Task ValidateRegistrationDto(RegistrationDto registrationDto)
     {
-        await CheckIsUserPresent(registrationDto);
+        if (await _userRepository.CheckIsUserPresentByEmail(registrationDto.Email))
+        {
+            ModelState.AddModelError(nameof(RegistrationDto.Email), "User already exists");
+        }
 
         if (registrationDto.Password != registrationDto.ConfirmPassword)
         {
             ModelState.AddModelError(nameof(RegistrationDto.ConfirmPassword), "Passwords do not match");
-        }
-    }
-
-    private async Task CheckIsUserPresent(RegistrationDto registrationDto)
-    {
-        if (await _appDbContext.Users.AnyAsync(user => user.Email == registrationDto.Email))
-        {
-            ModelState.AddModelError(nameof(RegistrationDto.Email), "User already exists");
         }
     }
 }

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SafeShare.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(UsersContext))]
     [Migration("20221208135639_InitialCreate")]
     partial class InitialCreate
     {
