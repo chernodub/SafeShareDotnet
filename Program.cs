@@ -16,6 +16,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<UsersContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
+builder.Services.AddDbContext<ShareableResourcesContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
