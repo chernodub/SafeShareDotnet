@@ -24,7 +24,7 @@ public class JwtAuthenticationTokenService : IAuthenticationTokenService
 
     public string GenerateToken(ClaimsPrincipal claimsPrincipal)
     {
-        const int jwtExpirationMinutes = 1;
+        const int jwtExpirationMinutes = 10;
 
         JwtSecurityToken token = new(
             claims: claimsPrincipal.Claims,
