@@ -22,11 +22,17 @@ public class ShareableMessagesController : ControllerBase
         _shareableMessageRepository = shareableMessageRepository;
     }
 
-    [HttpGet]
+    [HttpGet("my")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ShareableMessage>))]
-    public async Task<OkObjectResult> GetUploadedMessages()
+    public async Task<IActionResult> GetUploadedMessages()
     {
-        return Ok(await _shareableMessageRepository.GetMessages());
+        string? email = User.FindFirstValue(ClaimTypes.Email);
+        if (email is null)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(await _shareableMessageRepository.GetMessagesByUserEmail(email));
     }
 
     [HttpPost]

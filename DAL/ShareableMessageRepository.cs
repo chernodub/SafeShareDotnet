@@ -15,9 +15,11 @@ public class ShareableMessageRepository : IShareableMessageRepository
         _shareableResourcesContext = shareableResourcesContext;
     }
 
-    public Task<List<ShareableMessage>> GetMessages()
+    public Task<List<ShareableMessage>> GetMessagesByUserEmail(string email)
     {
-        return _shareableResourcesContext.Messages.ToListAsync();
+        return _shareableResourcesContext.Messages
+            .Where(m => m.OwnerEmail == email)
+            .ToListAsync();
     }
 
     public async Task AddMessage(ShareableMessage message)
