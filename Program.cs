@@ -20,6 +20,7 @@ builder.Services.AddDbContextPool<ShareableResourcesContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IShareableMessageRepository, ShareableMessageRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<IAuthenticationTokenService, JwtAuthenticationTokenService>();
