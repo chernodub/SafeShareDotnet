@@ -23,7 +23,7 @@ public class ShareableMessagesController : ControllerBase
     }
 
     [HttpGet("my")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ShareableMessage>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ShareableMessageDto>))]
     public async Task<IActionResult> GetUploadedMessages()
     {
         string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -32,11 +32,14 @@ public class ShareableMessagesController : ControllerBase
             return Unauthorized();
         }
 
-        return Ok(await _shareableMessageRepository.GetMessagesByUserEmail(email));
+        List<ShareableMessage> messages = await _shareableMessageRepository.GetMessagesByUserEmail(email);
+        List<ShareableMessageDto> dtos = messages.Select(m => new ShareableMessageDto(m)).ToList();
+
+        return Ok(dtos);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ShareableMessage))]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ShareableMessageDto))]
     public async Task<IActionResult> UploadMessage([FromBody] CreateShareableMessageDto message)
     {
         string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -47,16 +50,16 @@ public class ShareableMessagesController : ControllerBase
 
         ShareableMessage newMessage = new()
         {
-            Text = message.Text, ExpirationDate = new DateTimeOffset(message.ExpirationDate), OwnerEmail = email
+            Text = message.Text, ExpirationDate = new DateTimeOffset(message.ExpiresAt), OwnerEmail = email
         };
         await _shareableMessageRepository.AddMessage(newMessage);
 
-        return CreatedAtAction(nameof(GetUploadedMessages), newMessage);
+        return CreatedAtAction(nameof(GetUploadedMessages), new ShareableMessageDto(newMessage));
     }
 
     [HttpPost("read/{id}")]
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareableMessage))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareableMessageDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ReadMessage([FromRoute] string id)
     {
@@ -69,6 +72,6 @@ public class ShareableMessagesController : ControllerBase
 
         await _shareableMessageRepository.RemoveMessage(message);
 
-        return Ok(message);
+        return Ok(new ShareableMessageDto(message));
     }
 }
