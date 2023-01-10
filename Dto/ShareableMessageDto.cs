@@ -9,11 +9,15 @@ public record ShareableMessageDto()
         Text = message.Text;
         CreatedAt = message.Created.DateTime;
         OwnerEmail = message.OwnerEmail;
-        ExpiresAt = message.ExpirationDate.DateTime;
+        ExpiresAt = message.ExpiresAt?.DateTime;
+        IsOneTimeUse = message.IsOneTimeUse;
+        Id = message.Id.ToString();
     }
 
-    public string Text { get; init; }
-    public DateTime CreatedAt { get; init; }
-    public string OwnerEmail { get; init; }
-    public DateTime ExpiresAt { get; init; }
+    public string Id { get; }
+    public bool IsOneTimeUse { get; }
+    public string Text { get; }
+    public DateTime CreatedAt { get; }
+    public string OwnerEmail { get; }
+    public DateTime? ExpiresAt { get; }
 }

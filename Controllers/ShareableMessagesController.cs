@@ -50,7 +50,10 @@ public class ShareableMessagesController : ControllerBase
 
         ShareableMessage newMessage = new()
         {
-            Text = message.Text, ExpirationDate = new DateTimeOffset(message.ExpiresAt), OwnerEmail = email
+            Text = message.Text,
+            ExpiresAt = message.ExpiresAt,
+            IsOneTimeUse = message.IsOneTimeUse,
+            OwnerEmail = email
         };
         await _shareableMessageRepository.AddMessage(newMessage);
 
@@ -70,7 +73,10 @@ public class ShareableMessagesController : ControllerBase
             return NotFound();
         }
 
-        await _shareableMessageRepository.RemoveMessage(message);
+        if (message.IsOneTimeUse)
+        {
+            await _shareableMessageRepository.RemoveMessage(message);
+        }
 
         return Ok(new ShareableMessageDto(message));
     }
