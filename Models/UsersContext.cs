@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-using SafeShare.Models;
+namespace SafeShare.Models;
 
 public class UsersContext : DbContext
 {

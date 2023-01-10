@@ -14,10 +14,13 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<UsersContext>(opt =>
+builder.Services.AddDbContextPool<UsersContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
+builder.Services.AddDbContextPool<ShareableResourcesContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IShareableMessageRepository, ShareableMessageRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<IAuthenticationTokenService, JwtAuthenticationTokenService>();
