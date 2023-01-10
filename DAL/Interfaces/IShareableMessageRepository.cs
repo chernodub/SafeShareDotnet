@@ -7,4 +7,5 @@ public interface IShareableMessageRepository
     public Task<List<ShareableMessage>> GetMessages();
     public Task<ShareableMessage?> GetMessageById(int id);
     public Task AddMessage(ShareableMessage message);
+    public Task RemoveMessage(ShareableMessage message);
 }

@@ -30,4 +30,10 @@ public class ShareableMessageRepository : IShareableMessageRepository
         await _shareableResourcesContext.Messages.AddAsync(message);
         await _shareableResourcesContext.SaveChangesAsync();
     }
+
+    public async Task RemoveMessage(ShareableMessage message)
+    {
+        _shareableResourcesContext.Messages.Remove(message);
+        await _shareableResourcesContext.SaveChangesAsync();
+    }
 }

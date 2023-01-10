@@ -48,7 +48,7 @@ public class ShareableResourcesController : ControllerBase
         return CreatedAtAction(nameof(GetUploadedMessages), newMessage);
     }
 
-    [HttpGet("message/{id}")]
+    [HttpPost("messages/read/{id}")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareableMessage))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,6 +62,7 @@ public class ShareableResourcesController : ControllerBase
             return NotFound();
         }
 
+        await _shareableMessageRepository.RemoveMessage(message);
 
         return Ok(message);
     }
