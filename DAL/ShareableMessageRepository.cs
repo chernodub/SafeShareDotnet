@@ -20,11 +20,6 @@ public class ShareableMessageRepository : IShareableMessageRepository
         return _shareableResourcesContext.Messages.ToListAsync();
     }
 
-    public Task<ShareableMessage?> GetMessageById(int id)
-    {
-        return _shareableResourcesContext.Messages.Include(m => m.Owner).FirstOrDefaultAsync(m => m.Id == id);
-    }
-
     public async Task AddMessage(ShareableMessage message)
     {
         await _shareableResourcesContext.Messages.AddAsync(message);
@@ -35,5 +30,11 @@ public class ShareableMessageRepository : IShareableMessageRepository
     {
         _shareableResourcesContext.Messages.Remove(message);
         await _shareableResourcesContext.SaveChangesAsync();
+    }
+
+    public Task<ShareableMessage?> GetMessageById(string id)
+    {
+        return _shareableResourcesContext.Messages.Include(m => m.Owner)
+            .FirstOrDefaultAsync(m => m.Id.Equals(new Guid(id)));
     }
 }

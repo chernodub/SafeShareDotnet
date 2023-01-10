@@ -52,10 +52,9 @@ public class ShareableMessagesController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareableMessage))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetMessage([FromRoute] string id)
+    public async Task<IActionResult> ReadMessage([FromRoute] string id)
     {
-        int numericId = Int32.Parse(id);
-        ShareableMessage? message = await _shareableMessageRepository.GetMessageById(numericId);
+        ShareableMessage? message = await _shareableMessageRepository.GetMessageById(id);
 
         if (message is null)
         {
