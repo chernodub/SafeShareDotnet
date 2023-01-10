@@ -9,27 +9,27 @@ using SafeShare.Models;
 
 namespace SafeShare.Controllers;
 
-[Route("api/resources")]
+[Route("api/messages")]
 [Authorize]
 [ApiController]
-public class ShareableResourcesController : ControllerBase
+public class ShareableMessagesController : ControllerBase
 {
     private readonly IShareableMessageRepository _shareableMessageRepository;
 
-    public ShareableResourcesController(
+    public ShareableMessagesController(
         IShareableMessageRepository shareableMessageRepository)
     {
         _shareableMessageRepository = shareableMessageRepository;
     }
 
-    [HttpGet("messages")]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ShareableMessage>))]
     public async Task<OkObjectResult> GetUploadedMessages()
     {
         return Ok(await _shareableMessageRepository.GetMessages());
     }
 
-    [HttpPost("messages")]
+    [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ShareableMessage))]
     public async Task<IActionResult> UploadMessage([FromBody] CreateShareableMessageDto message)
     {
@@ -48,7 +48,7 @@ public class ShareableResourcesController : ControllerBase
         return CreatedAtAction(nameof(GetUploadedMessages), newMessage);
     }
 
-    [HttpPost("messages/read/{id}")]
+    [HttpPost("read/{id}")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareableMessage))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
