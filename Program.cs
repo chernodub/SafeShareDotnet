@@ -14,9 +14,9 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<UsersContext>(opt =>
+builder.Services.AddDbContextPool<UsersContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
-builder.Services.AddDbContext<ShareableResourcesContext>(opt =>
+builder.Services.AddDbContextPool<ShareableResourcesContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
