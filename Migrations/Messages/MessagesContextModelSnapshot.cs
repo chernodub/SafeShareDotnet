@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SafeShare.Models;
 
 #nullable disable
 
-namespace SafeShare.Migrations.ShareableResources
+namespace SafeShare.Migrations.Messages
 {
-    [DbContext(typeof(ShareableResourcesContext))]
-    [Migration("20230110114428_AddResourceLifetime")]
-    partial class AddResourceLifetime
+    [DbContext(typeof(MessagesContext))]
+    partial class MessagesContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +22,7 @@ namespace SafeShare.Migrations.ShareableResources
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SafeShare.Models.ShareableMessage", b =>
+            modelBuilder.Entity("SafeShare.Models.Message", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,7 +76,7 @@ namespace SafeShare.Migrations.ShareableResources
                         });
                 });
 
-            modelBuilder.Entity("SafeShare.Models.ShareableMessage", b =>
+            modelBuilder.Entity("SafeShare.Models.Message", b =>
                 {
                     b.HasOne("SafeShare.Models.User", "Owner")
                         .WithMany()

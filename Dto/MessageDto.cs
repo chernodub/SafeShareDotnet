@@ -2,9 +2,9 @@ using SafeShare.Models;
 
 namespace SafeShare.Dto;
 
-public record ShareableMessageDto()
+public record MessageDto()
 {
-    public ShareableMessageDto(ShareableMessage message) : this()
+    public MessageDto(Message message) : this()
     {
         Text = message.Text;
         CreatedAt = message.Created.DateTime;

@@ -16,11 +16,11 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContextPool<UsersContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
-builder.Services.AddDbContextPool<ShareableResourcesContext>(opt =>
+builder.Services.AddDbContextPool<MessagesContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSql")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IShareableMessageRepository, ShareableMessageRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<IAuthenticationTokenService, JwtAuthenticationTokenService>();

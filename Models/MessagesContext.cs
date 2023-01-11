@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace SafeShare.Models;
 
-public class ShareableResourcesContext : DbContext
+public class MessagesContext : DbContext
 {
-    public ShareableResourcesContext(DbContextOptions<ShareableResourcesContext> options) : base(options) { }
+    public MessagesContext(DbContextOptions<MessagesContext> options) : base(options) { }
 
-    public DbSet<ShareableMessage> Messages { get; set; } = null!;
+    public DbSet<Message> Messages { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -17,7 +17,7 @@ public class ShareableResourcesContext : DbContext
         modelBuilder.Entity<User>().ToTable("Users", t => t.ExcludeFromMigrations());
 
         // To protect/hide the neighbouring data, we generate the guids instead of integers
-        modelBuilder.Entity<ShareableMessage>()
+        modelBuilder.Entity<Message>()
             .Property(u => u.Id)
             .HasValueGenerator<GuidValueGenerator>();
     }

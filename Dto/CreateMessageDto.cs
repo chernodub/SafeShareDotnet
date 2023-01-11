@@ -1,6 +1,6 @@
 namespace SafeShare.Dto;
 
-public record CreateShareableMessageDto
+public record CreateMessageDto
 {
     /// <summary>
     ///     Date and time when the message should be deleted.

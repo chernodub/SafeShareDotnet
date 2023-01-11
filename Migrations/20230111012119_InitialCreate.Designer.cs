@@ -11,7 +11,7 @@ using SafeShare.Models;
 namespace SafeShare.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    [Migration("20230110092725_InitialCreate")]
+    [Migration("20230111012119_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

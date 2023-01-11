@@ -12,18 +12,18 @@ namespace SafeShare.Controllers;
 [Route("api/messages")]
 [Authorize]
 [ApiController]
-public class ShareableMessagesController : ControllerBase
+public class MessagesController : ControllerBase
 {
-    private readonly IShareableMessageRepository _shareableMessageRepository;
+    private readonly IMessageRepository _messageRepository;
 
-    public ShareableMessagesController(
-        IShareableMessageRepository shareableMessageRepository)
+    public MessagesController(
+        IMessageRepository messageRepository)
     {
-        _shareableMessageRepository = shareableMessageRepository;
+        _messageRepository = messageRepository;
     }
 
     [HttpGet("my")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ShareableMessageDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<MessageDto>))]
     public async Task<IActionResult> GetUploadedMessages()
     {
         string? email = User.FindFirstValue(ClaimTypes.Email);
@@ -32,15 +32,15 @@ public class ShareableMessagesController : ControllerBase
             return Unauthorized();
         }
 
-        List<ShareableMessage> messages = await _shareableMessageRepository.GetMessagesByUserEmail(email);
-        List<ShareableMessageDto> dtos = messages.Select(m => new ShareableMessageDto(m)).ToList();
+        List<Message> messages = await _messageRepository.GetMessagesByUserEmail(email);
+        List<MessageDto> dtos = messages.Select(m => new MessageDto(m)).ToList();
 
         return Ok(dtos);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ShareableMessageDto))]
-    public async Task<IActionResult> UploadMessage([FromBody] CreateShareableMessageDto message)
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MessageDto))]
+    public async Task<IActionResult> UploadMessage([FromBody] CreateMessageDto message)
     {
         string? email = User.FindFirstValue(ClaimTypes.Email);
         if (email is null)
@@ -48,25 +48,25 @@ public class ShareableMessagesController : ControllerBase
             return Unauthorized();
         }
 
-        ShareableMessage newMessage = new()
+        Message newMessage = new()
         {
             Text = message.Text,
             ExpiresAt = message.ExpiresAt,
             IsOneTimeUse = message.IsOneTimeUse,
             OwnerEmail = email
         };
-        await _shareableMessageRepository.AddMessage(newMessage);
+        await _messageRepository.AddMessage(newMessage);
 
-        return CreatedAtAction(nameof(GetUploadedMessages), new ShareableMessageDto(newMessage));
+        return CreatedAtAction(nameof(GetUploadedMessages), new MessageDto(newMessage));
     }
 
     [HttpPost("read/{id}")]
     [AllowAnonymous]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ShareableMessageDto))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MessageDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ReadMessage([FromRoute] string id)
     {
-        ShareableMessage? message = await _shareableMessageRepository.GetMessageById(id);
+        Message? message = await _messageRepository.GetMessageById(id);
 
         if (message is null)
         {
@@ -75,24 +75,24 @@ public class ShareableMessagesController : ControllerBase
 
         if (message.IsOneTimeUse)
         {
-            await _shareableMessageRepository.RemoveMessage(message);
+            await _messageRepository.RemoveMessage(message);
         }
 
-        return Ok(new ShareableMessageDto(message));
+        return Ok(new MessageDto(message));
     }
 
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteMessage([FromRoute] string id)
     {
-        ShareableMessage? message = await _shareableMessageRepository.GetMessageById(id);
+        Message? message = await _messageRepository.GetMessageById(id);
 
         if (message is null)
         {
             return NotFound();
         }
 
-        await _shareableMessageRepository.RemoveMessage(message);
+        await _messageRepository.RemoveMessage(message);
         return NoContent();
     }
 }

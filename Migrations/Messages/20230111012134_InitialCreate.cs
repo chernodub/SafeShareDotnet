@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SafeShare.Migrations.ShareableResources
+namespace SafeShare.Migrations.Messages
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -18,7 +18,8 @@ namespace SafeShare.Migrations.ShareableResources
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    ExpirationDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    ExpiresAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    IsOneTimeUse = table.Column<bool>(type: "boolean", nullable: false),
                     OwnerEmail = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
