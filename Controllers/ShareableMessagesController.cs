@@ -80,4 +80,19 @@ public class ShareableMessagesController : ControllerBase
 
         return Ok(new ShareableMessageDto(message));
     }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteMessage([FromRoute] string id)
+    {
+        ShareableMessage? message = await _shareableMessageRepository.GetMessageById(id);
+
+        if (message is null)
+        {
+            return NotFound();
+        }
+
+        await _shareableMessageRepository.RemoveMessage(message);
+        return NoContent();
+    }
 }
