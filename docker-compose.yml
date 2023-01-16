@@ -15,10 +15,11 @@ services:
     env_file:
       - .env
 
-    image: todos-api
+    image: safeshare/api
     restart: always
     depends_on:
       - db
+    #      - localstack-s3
     links:
       - db:${POSTGRES_SERVER_ALIAS}
     build:
@@ -26,3 +27,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:80"
+  
+  minio:
+    image: minio/minio
+    hostname: ${MINIO_CONTAINER_NAME}
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    ports:
+      - "${MINIO_API_PORT}:${MINIO_API_PORT}"
+      - "9090:9090"
+    volumes:
+      - ~/minio/data:/data
+    command: "server /data --console-address :9090"

@@ -24,11 +24,11 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<IAuthenticationTokenService, JwtAuthenticationTokenService>();
+builder.Services.AddScoped<BlobStorageService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
 {
     o.TokenValidationParameters = JwtAuthenticationTokenService.GetTokenValidationParameters(builder.Configuration);
 });
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -58,6 +58,16 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 WebApplication app = builder.Build();
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    BlobStorageService? service = scope.ServiceProvider.GetService<BlobStorageService>();
+    string? bucketName = app.Configuration["MINIO_BUCKET_NAME"];
+    if (service is not null && bucketName is not null)
+    {
+        await service.CreateBucketIfNotExists(bucketName);
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
