@@ -63,6 +63,23 @@ WebApplication app = builder.Build();
 
 using (IServiceScope scope = app.Services.CreateScope())
 {
+    IServiceProvider services = scope.ServiceProvider;
+
+    DbContext[] contexts =
+    {
+        services.GetRequiredService<UsersContext>(), services.GetRequiredService<MessagesContext>()
+    };
+    foreach (DbContext context in contexts)
+    {
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
+    }
+}
+
+using (IServiceScope scope = app.Services.CreateScope())
+{
     BlobRepository? service = scope.ServiceProvider.GetService<BlobRepository>();
     string? bucketName = app.Configuration["MINIO_BUCKET_NAME"];
     if (service is not null && bucketName is not null)
