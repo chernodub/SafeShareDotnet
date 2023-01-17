@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using SafeShare.DAL;
-using SafeShare.Dto;
+using SafeShare.DTO;
 
 using File = SafeShare.Models.File;
 

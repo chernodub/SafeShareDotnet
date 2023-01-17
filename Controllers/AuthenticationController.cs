@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using SafeShare.DAL;
-using SafeShare.Dto;
+using SafeShare.DTO;
 using SafeShare.Models;
 using SafeShare.Services;
 

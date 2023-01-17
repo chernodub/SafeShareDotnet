@@ -1,6 +1,6 @@
 using File = SafeShare.Models.File;
 
-namespace SafeShare.Dto;
+namespace SafeShare.DTO;
 
 public record FileDto
 {

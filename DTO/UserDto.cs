@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using SafeShare.Models;
 
-namespace SafeShare.Dto;
+namespace SafeShare.DTO;
 
 public record UserDto
 {

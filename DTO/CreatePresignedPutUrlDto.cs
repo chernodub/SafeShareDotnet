@@ -1,7 +1,10 @@
-namespace SafeShare.Dto;
+namespace SafeShare.DTO;
 
-public record CreateMessageDto
+public record CreatePresignedPutUrlDto
+
 {
+    public string Name { get; init; }
+
     /// <summary>
     ///     Date and time when the message should be deleted.
     /// </summary>
@@ -11,9 +14,4 @@ public record CreateMessageDto
     ///     If `true`, the resource will be deleted after the first read.
     /// </summary>
     public bool IsOneTimeUse { get; init; }
-
-    /// <summary>
-    ///     Message text
-    /// </summary>
-    public string Text { get; init; }
 }
