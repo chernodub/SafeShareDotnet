@@ -27,6 +27,7 @@ builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<IAuthenticationTokenService, JwtAuthenticationTokenService>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IMessagesService, MessagesService>();
+builder.Services.AddScoped<IFilesService, FilesService>();
 builder.Services.AddScoped<BlobRepository>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
 {
