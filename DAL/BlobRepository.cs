@@ -2,13 +2,13 @@ using System.Net;
 
 using Minio;
 
-namespace SafeShare.Services;
+namespace SafeShare.DAL;
 
-public class BlobStorageService
+public class BlobRepository : IBlobRepository
 {
     private readonly MinioClient _minioClient;
 
-    public BlobStorageService(
+    public BlobRepository(
         IConfiguration configuration)
     {
         _minioClient = new MinioClient()
@@ -55,8 +55,7 @@ public class BlobStorageService
         return _minioClient.PresignedPutObjectAsync(args);
     }
 
-    public Task<string> GeneratePresignedGetRequest(string bucketName, string uid, string objectName,
-        int durationSeconds)
+    public Task<string> GeneratePresignedGetRequest(string bucketName, string uid, int durationSeconds)
     {
         PresignedGetObjectArgs args = new PresignedGetObjectArgs()
             .WithBucket(bucketName)
@@ -64,6 +63,14 @@ public class BlobStorageService
             .WithExpiry(durationSeconds);
 
         return _minioClient.PresignedGetObjectAsync(args);
+    }
+
+    public async Task RemoveObject(string bucketName, string uid)
+    {
+        RemoveObjectArgs args = new RemoveObjectArgs()
+            .WithBucket(bucketName)
+            .WithObject(uid);
+        await _minioClient.RemoveObjectAsync(args);
     }
 
     public async Task CreateBucketIfNotExists(string bucketName)

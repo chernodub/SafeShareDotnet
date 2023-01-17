@@ -18,5 +18,6 @@ public abstract class ShareableResource
     public bool IsOneTimeUse { get; init; }
 
     public required string OwnerEmail { get; init; }
-    public User Owner { get; init; }
+
+    public User? Owner { get; init; }
 }

@@ -21,10 +21,11 @@ builder.Services.AddDbContextPool<MessagesContext>(opt =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IFilesRepository, FilesRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<IAuthenticationTokenService, JwtAuthenticationTokenService>();
-builder.Services.AddScoped<BlobStorageService>();
+builder.Services.AddScoped<BlobRepository>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
 {
     o.TokenValidationParameters = JwtAuthenticationTokenService.GetTokenValidationParameters(builder.Configuration);
@@ -61,7 +62,7 @@ WebApplication app = builder.Build();
 
 using (IServiceScope scope = app.Services.CreateScope())
 {
-    BlobStorageService? service = scope.ServiceProvider.GetService<BlobStorageService>();
+    BlobRepository? service = scope.ServiceProvider.GetService<BlobRepository>();
     string? bucketName = app.Configuration["MINIO_BUCKET_NAME"];
     if (service is not null && bucketName is not null)
     {

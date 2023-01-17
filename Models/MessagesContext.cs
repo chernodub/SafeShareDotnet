@@ -8,6 +8,7 @@ public class MessagesContext : DbContext
     public MessagesContext(DbContextOptions<MessagesContext> options) : base(options) { }
 
     public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<File> Files { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,6 +19,10 @@ public class MessagesContext : DbContext
 
         // To protect/hide the neighbouring data, we generate the guids instead of integers
         modelBuilder.Entity<Message>()
+            .Property(u => u.Id)
+            .HasValueGenerator<GuidValueGenerator>();
+
+        modelBuilder.Entity<File>()
             .Property(u => u.Id)
             .HasValueGenerator<GuidValueGenerator>();
     }
