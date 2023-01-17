@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using SafeShare.Models;
 
@@ -22,13 +23,15 @@ public class MessageRepository : IMessageRepository
             .ToListAsync();
     }
 
-    public async Task AddMessage(Message message)
+    public async Task<Message> AddMessage(Message message)
     {
-        await _messagesContext.Messages.AddAsync(message);
+        EntityEntry<Message> newMessage = await _messagesContext.Messages.AddAsync(message);
         await _messagesContext.SaveChangesAsync();
+
+        return newMessage.Entity;
     }
 
-    public async Task RemoveMessage(Message message)
+    public async Task DeleteMessage(Message message)
     {
         _messagesContext.Messages.Remove(message);
         await _messagesContext.SaveChangesAsync();
