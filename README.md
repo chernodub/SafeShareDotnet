@@ -15,9 +15,9 @@ The main goal of the project is to allow people to safely share files and/or tex
     - [x]  Specify whether the resource should be deleted after it is viewed (for both messages and files).
     - [x]  Get the list of files/texts they have uploaded previously. Users can't see deleted files/texts.
     - [x]  Delete a file/text they have uploaded earlier.
-     <aside>
-     💡 The resource urls are based on hashes, so they are not guessable, therefore "protected" from guessing.
-     </aside>
+      <aside>
+      💡 The resource urls are based on hashes, so they are not guessable, therefore "protected" from guessing.
+      </aside>
 - [x]  Anonymous users can access files/texts using the generated URLs.
 
 ## Additional features
@@ -28,6 +28,9 @@ The main goal of the project is to allow people to safely share files and/or tex
 
 ## Development
 
-```shell
-docker-compose up
-```
+1. Create `.env` based on `.env.template` and fill in the values.
+2. Run the app via docker-compose:
+    ```shell
+    docker-compose up
+    ```
+3. Go to <http://localhost:8080/swagger/index.html> to see the API documentation.
