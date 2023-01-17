@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace SafeShare.Dto;
+namespace SafeShare.DTO;
 
 public record RegistrationDto
 {

@@ -1,4 +1,4 @@
-namespace SafeShare.Dto;
+namespace SafeShare.DTO;
 
 public record CreateMessageDto
 {

@@ -1,6 +1,6 @@
 using SafeShare.Models;
 
-namespace SafeShare.Dto;
+namespace SafeShare.DTO;
 
 public record MessageDto()
 {
