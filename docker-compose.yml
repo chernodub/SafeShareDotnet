@@ -1,11 +1,9 @@
 version: '3.8'
 
 services:
-
   db:
     env_file:
       - .env
-    
     image: postgres
     restart: always
     ports:
@@ -14,12 +12,11 @@ services:
   todo-api:
     env_file:
       - .env
-
     image: safeshare/api
     restart: always
     depends_on:
       - db
-    #      - localstack-s3
+      - minio
     links:
       - db:${POSTGRES_SERVER_ALIAS}
     build:
